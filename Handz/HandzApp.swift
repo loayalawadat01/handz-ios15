@@ -5,6 +5,10 @@ struct HandzApp: App {
     @StateObject private var authSession = AuthSession.shared
     @AppStorage(AppAppearance.storageKey) private var appearance: String = AppAppearance.system.rawValue
 
+    init() {
+        HandzIOS15.setUp()
+    }
+
     var body: some Scene {
         WindowGroup {
             DispatchPopupContainer {

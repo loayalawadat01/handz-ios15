@@ -41,7 +41,7 @@ struct PaymentHistoryView: View {
             await viewModel.load()
             withAnimation(reduceMotion ? HandzMotion.fade : HandzMotion.standard) { appeared = true }
         }
-        .refreshable { await viewModel.load() }
+        .handzRefreshable { await viewModel.load() }
     }
 
     // MARK: - Big total at the top
@@ -54,7 +54,7 @@ struct PaymentHistoryView: View {
             HandzEyebrow(showsEarned ? "Earned on Handz" : "Paid on Handz")
             HandzAmountText(showsEarned ? earned : paid,
                             color: showsEarned ? HandzColor.accentInk : HandzColor.textPrimary)
-                .contentTransition(.numericText())
+                .handzNumericTextTransition()
             if showsEarned && !viewModel.asCustomer.isEmpty {
                 Text("You also paid \(HandzMoney.text(paid)) as a customer")
                     .font(HandzTypography.caption)
@@ -155,6 +155,6 @@ struct PaymentListRow: View {
 
 struct PaymentHistoryView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack { PaymentHistoryView() }
+        HandzNavigationStack { PaymentHistoryView() }
     }
 }

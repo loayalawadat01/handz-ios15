@@ -58,6 +58,6 @@ struct SavedJobsView: View {
 
 struct SavedJobsView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack { SavedJobsView() }
+        HandzNavigationStack { SavedJobsView() }
     }
 }

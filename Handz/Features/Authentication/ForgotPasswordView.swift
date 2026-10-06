@@ -5,7 +5,7 @@ struct ForgotPasswordView: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        NavigationStack {
+        HandzNavigationStack {
             Form {
                 switch viewModel.step {
                 case .enterEmail:

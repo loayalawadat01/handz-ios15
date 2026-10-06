@@ -66,6 +66,6 @@ struct NotificationPreferencesView: View {
 
 struct NotificationPreferencesView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack { NotificationPreferencesView() }
+        HandzNavigationStack { NotificationPreferencesView() }
     }
 }

@@ -38,8 +38,8 @@ struct NotificationsView: View {
         .handzScreenBackground()
         .navigationTitle("Notifications")
         .toolbar {
-            if viewModel.unreadCount > 0 {
-                ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if viewModel.unreadCount > 0 {
                     Button("Mark all read") {
                         HandzHaptics.tap()
                         Task { await viewModel.markAllRead() }
@@ -49,7 +49,7 @@ struct NotificationsView: View {
             }
         }
         .task { await viewModel.load() }
-        .refreshable { await viewModel.load() }
+        .handzRefreshable { await viewModel.load() }
     }
 
     private func group(_ title: String, _ items: [AppNotification]) -> some View {
@@ -113,6 +113,6 @@ struct NotificationsView: View {
 
 struct NotificationsView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack { NotificationsView() }
+        HandzNavigationStack { NotificationsView() }
     }
 }

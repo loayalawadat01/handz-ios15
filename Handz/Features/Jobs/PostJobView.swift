@@ -3,7 +3,7 @@ import PhotosUI
 
 struct PostJobView: View {
     @StateObject private var viewModel: PostJobViewModel
-    @State private var photoItems: [PhotosPickerItem] = []
+    @State private var showingPhotoPicker = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.handzTabBar) private var tabBar
     private let isRebook: Bool
@@ -48,7 +48,7 @@ struct PostJobView: View {
                 .padding(.top, HandzSpacing.sm)
                 .padding(.bottom, HandzSpacing.lg)
             }
-            .scrollDismissesKeyboard(.interactively)
+            .handzScrollDismissesKeyboard()
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 postBar(proxy: proxy)
             }
@@ -71,17 +71,10 @@ struct PostJobView: View {
             // When you leave a field, start checking it
             if let left = focused { touched.insert(left) }
         }
-        .onChange(of: photoItems) { items in
-            Task {
-                var loaded: [UIImage] = []
-                for item in items {
-                    if let data = try? await item.loadTransferable(type: Data.self),
-                       let image = UIImage(data: data) {
-                        loaded.append(image)
-                    }
-                }
-                withHandzAnimation { viewModel.photos = loaded }
-            }
+        .handzPhotoPicker(isPresented: $showingPhotoPicker, maxCount: 5) { photos in
+            let loaded = photos.compactMap { UIImage(data: $0) }
+            guard !loaded.isEmpty else { return }
+            withHandzAnimation { viewModel.photos = loaded }
         }
     }
 
@@ -126,8 +119,7 @@ struct PostJobView: View {
             }
 
             HandzFormField("Description", hint: "What needs doing, how big it is, anything heavy or tricky") {
-                TextField("Describe the work", text: $viewModel.description, axis: .vertical)
-                    .lineLimit(3...6)
+                HandzGrowingTextField("Describe the work", text: $viewModel.description, lines: 3...6)
                     .focused($focused, equals: .description)
                     .padding(.vertical, 14)
                     .handzField(isFocused: focused == .description)
@@ -342,7 +334,7 @@ struct PostJobView: View {
                 .font(.system(.title3, design: .rounded).weight(.bold).monospacedDigit())
                 .foregroundColor(HandzColor.textPrimary)
                 .frame(minWidth: 28)
-                .contentTransition(.numericText())
+                .handzNumericTextTransition()
                 .accessibilityLabel("\(viewModel.workersNeeded) workers")
             counterButton("plus", label: "One more worker", enabled: viewModel.workersNeeded < 20) {
                 viewModel.workersNeeded += 1
@@ -423,7 +415,9 @@ struct PostJobView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
-                    PhotosPicker(selection: $photoItems, maxSelectionCount: 5, matching: .images) {
+                    Button {
+                        showingPhotoPicker = true
+                    } label: {
                         VStack(spacing: 4) {
                             Image(systemName: viewModel.photos.isEmpty ? "plus" : "arrow.triangle.2.circlepath")
                                 .font(.system(size: 20, weight: .semibold))
@@ -464,8 +458,7 @@ struct PostJobView: View {
         VStack(alignment: .leading, spacing: 12) {
             cardTitle("Arrival instructions (optional)", icon: "key")
             HandzFormField("How to get in", hint: "Only shared with workers you hire.") {
-                TextField("Gate code, parking, which door…", text: $viewModel.arrivalInstructions, axis: .vertical)
-                    .lineLimit(2...4)
+                HandzGrowingTextField("Gate code, parking, which door…", text: $viewModel.arrivalInstructions, lines: 2...4)
                     .focused($focused, equals: .instructions)
                     .padding(.vertical, 14)
                     .handzField(isFocused: focused == .instructions)
@@ -594,7 +587,6 @@ struct PostJobView: View {
     }
 
     private func finishPosting(goToMyJobs: Bool) {
-        photoItems = []
         touched = []
         showAllErrors = false
         withHandzAnimation {
@@ -673,6 +665,6 @@ private struct PostedCelebration: View {
 
 struct PostJobView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack { PostJobView() }
+        HandzNavigationStack { PostJobView() }
     }
 }

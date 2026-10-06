@@ -34,7 +34,7 @@ struct MyPostedJobsView: View {
         .handzScreenBackground()
         .navigationTitle("My Jobs")
         .onAppear { Task { await load() } }
-        .refreshable { await load() }
+        .handzRefreshable { await load() }
     }
 
     // MARK: - Active / Done / Cancelled
@@ -142,6 +142,6 @@ struct MyPostedJobsView: View {
 
 struct MyPostedJobsView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack { MyPostedJobsView() }
+        HandzNavigationStack { MyPostedJobsView() }
     }
 }

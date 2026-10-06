@@ -40,7 +40,7 @@ struct ReviewSubmissionView: View {
             .padding(.top, HandzSpacing.sm)
             .padding(.bottom, HandzSpacing.lg)
         }
-        .scrollDismissesKeyboard(.interactively)
+        .handzScrollDismissesKeyboard()
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if showsSubmitBar {
                 submitBar
@@ -94,8 +94,7 @@ struct ReviewSubmissionView: View {
 
             HandzFormField("Tell others more (optional)",
                            hint: "What went well? Anything they could do better?") {
-                TextField("Write a short review", text: $viewModel.comment, axis: .vertical)
-                    .lineLimit(3...6)
+                HandzGrowingTextField("Write a short review", text: $viewModel.comment, lines: 3...6)
                     .focused($commentFocused)
                     .padding(.vertical, 14)
                     .handzField(isFocused: commentFocused)

@@ -9,6 +9,7 @@
 //
 
 import SwiftUI
+import UIKit
 import UniformTypeIdentifiers
 
 /// Which parts of the receipt are showing.
@@ -447,8 +448,11 @@ enum ReceiptPDF {
             .padding(24)
             .background(Color.white)
             .environment(\.colorScheme, .light)
-        let renderer = ImageRenderer(content: content)
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(fileName(receipt)).pdf")
+        guard #available(iOS 16.0, *) else {
+            return makeOnIOS15(content, url: url)
+        }
+        let renderer = ImageRenderer(content: content)
         var made = false
         renderer.render { size, draw in
             var box = CGRect(origin: .zero, size: size)
@@ -460,6 +464,39 @@ enum ReceiptPDF {
             made = true
         }
         return made ? url : nil
+    }
+
+    /// iOS 15 has no ImageRenderer: the receipt is laid out in a UIKit view
+    /// and drawn into the PDF as a picture.
+    @MainActor
+    private static func makeOnIOS15<Content: View>(_ content: Content, url: URL) -> URL? {
+        // In a window the view would get the screen's safe-area spacing, which
+        // would shift and cut the receipt, so that spacing is ignored.
+        let host = UIHostingController(rootView: content.ignoresSafeArea())
+        host.view.backgroundColor = .white
+        let size = host.sizeThatFits(in: CGSize(width: 428, height: CGFloat.greatestFiniteMagnitude))
+        guard size.width > 0, size.height > 0 else { return nil }
+        // Drawing works reliably only for a view that's in a window, so it's put
+        // in the app's window, far off screen, while it's drawn.
+        let window = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first(where: { $0.isKeyWindow })
+        host.view.frame = CGRect(origin: CGPoint(x: -10_000, y: 0), size: size)
+        window?.addSubview(host.view)
+        defer { host.view.removeFromSuperview() }
+        host.view.layoutIfNeeded()
+
+        let renderer = UIGraphicsPDFRenderer(bounds: host.view.bounds)
+        do {
+            try renderer.writePDF(to: url) { context in
+                context.beginPage()
+                host.view.drawHierarchy(in: host.view.bounds, afterScreenUpdates: true)
+            }
+            return url
+        } catch {
+            return nil
+        }
     }
 }
 

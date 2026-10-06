@@ -104,7 +104,7 @@ struct JobSummaryView: View {
 
 struct JobSummaryView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
+        HandzNavigationStack {
             JobSummaryView(jobWorkerId: "preview-id")
                 .environmentObject(AuthSession.shared)
         }

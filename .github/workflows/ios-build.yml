@@ -1,0 +1,61 @@
+name: iOS build check
+
+# Builds the app for the iPhone simulator on a Mac in the cloud (iOS 15.0
+# target), to catch Xcode errors before the project is opened on your Mac.
+# It only runs when started by hand (Actions tab, "iOS build check",
+# "Run workflow"), so it doesn't use up GitHub's free build minutes.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ios-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-14
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      # The oldest Xcode on the machine, closest to the Xcode 14 used on the Mac.
+      - name: Pick Xcode
+        run: |
+          ls -d /Applications/Xcode*.app
+          for v in 15.0.1 15.0 15.1 15.2 15.3 15.4 16.0 16.1 16.2; do
+            if [ -d "/Applications/Xcode_$v.app" ]; then
+              sudo xcode-select -s "/Applications/Xcode_$v.app"
+              break
+            fi
+          done
+          xcodebuild -version
+
+      - uses: actions/cache@v4
+        with:
+          path: SourcePackages
+          key: spm-${{ hashFiles('Handz.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+
+      - name: Build for the iPhone simulator
+        run: |
+          xcodebuild -list -project Handz.xcodeproj
+          set +e
+          xcodebuild build \
+            -project Handz.xcodeproj \
+            -scheme Handz \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            -clonedSourcePackagesDirPath SourcePackages \
+            CODE_SIGNING_ALLOWED=NO \
+            > build.log 2>&1
+          status=$?
+          echo "----- errors -----"
+          grep -E "error:" build.log | sort -u
+          echo "----- result -----"
+          grep -E "\*\* BUILD" build.log || tail -40 build.log
+          exit $status
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: build-log
+          path: build.log

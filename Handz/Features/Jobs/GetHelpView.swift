@@ -25,7 +25,7 @@ struct GetHelpView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        HandzNavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     emergencyBanner
@@ -41,7 +41,7 @@ struct GetHelpView: View {
                 .padding(.bottom, HandzSpacing.lg)
                 .animation(HandzMotion.safe(HandzMotion.standard), value: selectedIssue)
             }
-            .scrollDismissesKeyboard(.interactively)
+            .handzScrollDismissesKeyboard()
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 submitBar
             }
@@ -175,8 +175,7 @@ struct GetHelpView: View {
 
             HandzFormField(issue.id == "other" ? "Describe the problem" : "Details (optional)",
                            hint: issue.id == "other" ? "At least 10 characters" : nil) {
-                TextField("What happened?", text: $details, axis: .vertical)
-                    .lineLimit(3...6)
+                HandzGrowingTextField("What happened?", text: $details, lines: 3...6)
                     .focused($detailsFocused)
                     .padding(.vertical, 14)
                     .handzField(isFocused: detailsFocused)

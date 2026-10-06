@@ -65,7 +65,7 @@ struct AdminDisputesView: View {
         .handzScreenBackground()
         .navigationTitle("Reported problems")
         .task { await viewModel.load() }
-        .refreshable { await viewModel.load() }
+        .handzRefreshable { await viewModel.load() }
         .onChange(of: viewModel.showingOpen) { _ in
             Task { await viewModel.load() }
         }
@@ -199,8 +199,7 @@ struct AdminDisputeDetailView: View {
             }
 
             Section("Note to both people (optional)") {
-                TextField("Why you decided this", text: $notes, axis: .vertical)
-                    .lineLimit(2...5)
+                HandzGrowingTextField("Why you decided this", text: $notes, lines: 2...5)
             }
         }
 

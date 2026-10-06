@@ -69,12 +69,12 @@ struct MainTabView: View {
     private func page(_ tab: HandzTab) -> some View {
         switch tab {
         case .home:     HomeView() // has its own NavigationStack, with the room inside it
-        case .findWork: NavigationStack { BrowseJobsView().handzTabBarRoom() }
-        case .myWork:   NavigationStack { MyWorkView().handzTabBarRoom() }
-        case .myJobs:   NavigationStack { MyPostedJobsView().handzTabBarRoom() }
-        case .post:     NavigationStack { PostJobView().handzTabBarRoom() }
-        case .messages: NavigationStack { ConversationListView().handzTabBarRoom() }
-        case .account:  NavigationStack { AccountMenuView().handzTabBarRoom() }
+        case .findWork: HandzNavigationStack { BrowseJobsView().handzTabBarRoom() }
+        case .myWork:   HandzNavigationStack { MyWorkView().handzTabBarRoom() }
+        case .myJobs:   HandzNavigationStack { MyPostedJobsView().handzTabBarRoom() }
+        case .post:     HandzNavigationStack { PostJobView().handzTabBarRoom() }
+        case .messages: HandzNavigationStack { ConversationListView().handzTabBarRoom() }
+        case .account:  HandzNavigationStack { AccountMenuView().handzTabBarRoom() }
         }
     }
 }

@@ -6,7 +6,6 @@ struct ProfileView: View {
     @StateObject private var viewModel: ProfileViewModel
 
     @State private var showingPhotoPicker = false
-    @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var isBlocked = false
     @State private var showingReport = false
     @FocusState private var bioFocused: Bool
@@ -50,8 +49,8 @@ struct ProfileView: View {
             }
         }
         .toolbar {
-            if !isOwnProfile {
-                ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if !isOwnProfile {
                     Menu {
                         Button {
                             Task { await toggleBlock() }
@@ -82,15 +81,12 @@ struct ProfileView: View {
     private var header: some View {
         VStack(spacing: 12) {
             avatarButton
-                .photosPicker(isPresented: $showingPhotoPicker, selection: $selectedPhotoItem, matching: .images)
-                .onChange(of: selectedPhotoItem) { newItem in
+                .handzPhotoPicker(isPresented: $showingPhotoPicker) { photos in
+                    guard let data = photos.first, let uiImage = UIImage(data: data) else { return }
                     Task {
-                        if let data = try? await newItem?.loadTransferable(type: Data.self),
-                           let uiImage = UIImage(data: data) {
-                            await viewModel.uploadPhoto(uiImage)
-                            await authSession.refreshCurrentUser()
-                            await MainActor.run { HandzHaptics.success() }
-                        }
+                        await viewModel.uploadPhoto(uiImage)
+                        await authSession.refreshCurrentUser()
+                        await MainActor.run { HandzHaptics.success() }
                     }
                 }
 
@@ -221,8 +217,7 @@ struct ProfileView: View {
             }
 
             if viewModel.isEditingBio {
-                TextField("Tell people about yourself, your experience and what you enjoy doing", text: $viewModel.bio, axis: .vertical)
-                    .lineLimit(3...6)
+                HandzGrowingTextField("Tell people about yourself, your experience and what you enjoy doing", text: $viewModel.bio, lines: 3...6)
                     .focused($bioFocused)
                     .padding(.vertical, 14)
                     .handzField(isFocused: bioFocused)
@@ -266,15 +261,28 @@ struct ProfileView: View {
 
     // MARK: - Skills
 
+    private var skillChips: some View {
+        ForEach(viewModel.skills) { skill in
+            HandzChip(text: skill.displayName, kind: .info)
+        }
+    }
+
     @ViewBuilder
     private var skillsSection: some View {
         if !viewModel.skills.isEmpty {
             VStack(alignment: .leading, spacing: 12) {
                 sectionTitle("Skills")
 
-                FlowLayout(spacing: 8) {
-                    ForEach(viewModel.skills) { skill in
-                        HandzChip(text: skill.displayName, kind: .info)
+                if #available(iOS 16.0, *) {
+                    FlowLayout(spacing: 8) {
+                        skillChips
+                    }
+                } else {
+                    // iOS 15 can't wrap chips onto new lines, so they scroll sideways.
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            skillChips
+                        }
                     }
                 }
 
@@ -386,6 +394,7 @@ struct ProfileView: View {
 }
 
 /// Lays chips out in rows, wrapping to the next line when a row is full.
+@available(iOS 16.0, *)
 private struct FlowLayout: Layout {
     var spacing: CGFloat
 
@@ -435,7 +444,7 @@ private struct FlowLayout: Layout {
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
+        HandzNavigationStack {
             ProfileView(userId: "preview-id", userName: "Test User")
                 .environmentObject(AuthSession.shared)
         }

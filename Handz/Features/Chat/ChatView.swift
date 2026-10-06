@@ -98,7 +98,7 @@ struct ChatView: View {
                 .padding(.horizontal, 12)
                 .padding(.top, 8)
             }
-            .scrollDismissesKeyboard(.interactively)
+            .handzScrollDismissesKeyboard()
             .onAppear {
                 proxy.scrollTo("bottom", anchor: .bottom)
             }
@@ -265,8 +265,7 @@ struct ChatView: View {
             }
 
             HStack(alignment: .bottom, spacing: 10) {
-                TextField("Message \(firstName)…", text: $viewModel.draftText, axis: .vertical)
-                    .lineLimit(1...5)
+                HandzGrowingTextField("Message \(firstName)…", text: $viewModel.draftText, lines: 1...5)
                     .focused($composerFocused)
                     .font(HandzTypography.body)
                     .foregroundColor(HandzColor.textPrimary)
@@ -437,7 +436,7 @@ private struct BubbleShape: Shape {
 
 struct ChatView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
+        HandzNavigationStack {
             ChatView(otherUserId: "preview-id", otherUserName: "Preview User")
                 .environmentObject(AuthSession.shared)
         }

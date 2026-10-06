@@ -24,8 +24,7 @@ struct DispatchPopupContainer<Content: View>: View {
                         if abs(height - popupHeight) > 1 { popupHeight = height }
                     }
                 )
-                .presentationDetents([.height(popupHeight)])
-                .presentationDragIndicator(.hidden)
+                .handzSheetHeight(popupHeight)
                 .interactiveDismissDisabled()
             }
     }

@@ -78,6 +78,7 @@
 		188A2FFF306F0C8C00070D01 /* FormComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188A2FFE306F0C8C00070D01 /* FormComponents.swift */; };
 		188A3001306F0EDF00070D01 /* ListComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188A3000306F0EDF00070D01 /* ListComponents.swift */; };
 		EF081F2191DC8F17DF5610AE /* StyleComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990F63927AA61BD1BF6F9EF7 /* StyleComponents.swift */; };
+		DEBF35833462EE56875EC8BB /* iOS15Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080851C7198AC8D730954738 /* iOS15Support.swift */; };
 		188B1B063065E4EE004268BC /* ScheduleDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B1B053065E4EE004268BC /* ScheduleDisplay.swift */; };
 		188B1B083065EB01004268BC /* CurrentLocationFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B1B073065EB01004268BC /* CurrentLocationFetcher.swift */; };
 		18D2412D306732D30098A681 /* PhotoURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18D2412C306732D30098A681 /* PhotoURL.swift */; };
@@ -224,6 +225,7 @@
 		188A2FFE306F0C8C00070D01 /* FormComponents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormComponents.swift; sourceTree = "<group>"; };
 		188A3000306F0EDF00070D01 /* ListComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListComponents.swift; sourceTree = "<group>"; };
 		990F63927AA61BD1BF6F9EF7 /* StyleComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleComponents.swift; sourceTree = "<group>"; };
+		080851C7198AC8D730954738 /* iOS15Support.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOS15Support.swift; sourceTree = "<group>"; };
 		188B1B053065E4EE004268BC /* ScheduleDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleDisplay.swift; sourceTree = "<group>"; };
 		188B1B073065EB01004268BC /* CurrentLocationFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentLocationFetcher.swift; sourceTree = "<group>"; };
 		188B1B093065ED0E004268BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -323,6 +325,7 @@
 				18D2414E306980280098A681 /* AvatarView.swift */,
 				188A3000306F0EDF00070D01 /* ListComponents.swift */,
 				990F63927AA61BD1BF6F9EF7 /* StyleComponents.swift */,
+				080851C7198AC8D730954738 /* iOS15Support.swift */,
 			);
 			path = DesignSystem;
 			sourceTree = "<group>";
@@ -665,6 +668,7 @@
 				188156CE30587C4D00209139 /* Sources */,
 				188156CF30587C4D00209139 /* Frameworks */,
 				188156D030587C4D00209139 /* Resources */,
+				F91ED4613172A7E7D9710743 /* Put Mac network name in app */,
 			);
 			buildRules = (
 			);
@@ -757,6 +761,29 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		F91ED4613172A7E7D9710743 /* Put Mac network name in app */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(TARGET_BUILD_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = "Put Mac network name in app";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# A real iPhone finds the Handz server through this Mac's network name\n# (to the phone, \"localhost\" is the phone itself). Put the name in the app.\nPLIST=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nHOST=\"$(scutil --get LocalHostName 2>/dev/null)\"\nif [ -n \"$HOST\" ] && [ -f \"$PLIST\" ]; then\n  /usr/libexec/PlistBuddy -c \"Set :HandzMacHost ${HOST}.local\" \"$PLIST\" || /usr/libexec/PlistBuddy -c \"Add :HandzMacHost string ${HOST}.local\" \"$PLIST\"\n  echo \"Handz server address for a real iPhone: http://${HOST}.local:4000\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		188156CE30587C4D00209139 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -769,6 +796,7 @@
 				181DC266305B55E700B946B7 /* MyPostedJobsView.swift in Sources */,
 				188A3001306F0EDF00070D01 /* ListComponents.swift in Sources */,
 				EF081F2191DC8F17DF5610AE /* StyleComponents.swift in Sources */,
+				DEBF35833462EE56875EC8BB /* iOS15Support.swift in Sources */,
 				18D2413F306852390098A681 /* DeleteAccountView.swift in Sources */,
 				18E078E53063229D0049DF74 /* DispatchRepository.swift in Sources */,
 				181DC264305B55CE00B946B7 /* PaymentHistoryView.swift in Sources */,
@@ -961,7 +989,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1015,7 +1043,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -1036,6 +1064,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Handz/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Handz 15";
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Handz uses your location to confirm you've arrived at the job site, and to show the customer where you are while you're on the way.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1046,7 +1076,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.Handz;
+				PRODUCT_BUNDLE_IDENTIFIER = com.loayalawadat01.handz15;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -1065,6 +1095,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Handz/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Handz 15";
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Handz uses your location to confirm you've arrived at the job site, and to show the customer where you are while you're on the way.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1075,7 +1107,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.Handz;
+				PRODUCT_BUNDLE_IDENTIFIER = com.loayalawadat01.handz15;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -1091,7 +1123,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.HandzTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.loayalawadat01.handz15.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -1108,7 +1140,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.HandzTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.loayalawadat01.handz15.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;

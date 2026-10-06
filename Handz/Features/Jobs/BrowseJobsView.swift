@@ -20,7 +20,7 @@ struct BrowseJobsView: View {
         .handzScreenBackground()
         .navigationTitle("Find Work")
         .task { await viewModel.load() }
-        .refreshable { await viewModel.load() }
+        .handzRefreshable { await viewModel.load() }
         .sheet(isPresented: $viewModel.showingCategoryPicker) {
             CategoryPickerView(
                 categories: viewModel.categories,
@@ -113,6 +113,6 @@ struct BrowseJobsView: View {
 
 struct BrowseJobsView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack { BrowseJobsView() }
+        HandzNavigationStack { BrowseJobsView() }
     }
 }

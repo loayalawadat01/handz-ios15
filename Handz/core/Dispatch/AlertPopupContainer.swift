@@ -50,7 +50,7 @@ struct AlertPopupContainer<Content: View>: View {
             }
         }
         .sheet(item: $jobToOpen) { item in
-            NavigationStack {
+            HandzNavigationStack {
                 JobDetailView(jobId: item.id)
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {

@@ -10,7 +10,7 @@ struct TermsView: View {
     @State private var errorMessage: String?
 
     var body: some View {
-        NavigationStack {
+        HandzNavigationStack {
             ScrollView {
                 if isLoading {
                     ProgressView().padding(.top, HandzSpacing.xl)

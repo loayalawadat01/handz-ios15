@@ -71,7 +71,7 @@ struct LoginView: View {
             .padding(.bottom, HandzSpacing.lg)
             .animation(HandzMotion.safe(HandzMotion.standard), value: viewModel.errorMessage)
         }
-        .scrollDismissesKeyboard(.interactively)
+        .handzScrollDismissesKeyboard()
         .handzScreenBackground()
         .sheet(isPresented: $showingForgotPassword) {
             ForgotPasswordView()

@@ -15,7 +15,7 @@ struct ConversationListView: View {
         .handzScreenBackground()
         .navigationTitle("Messages")
         .task { await viewModel.load() }
-        .refreshable { await viewModel.load() }
+        .handzRefreshable { await viewModel.load() }
     }
 
     @ViewBuilder
@@ -120,6 +120,6 @@ struct ConversationListView: View {
 
 struct ConversationListView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack { ConversationListView() }
+        HandzNavigationStack { ConversationListView() }
     }
 }

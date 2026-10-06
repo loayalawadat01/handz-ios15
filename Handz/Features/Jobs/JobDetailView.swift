@@ -138,7 +138,7 @@ struct JobDetailView: View {
                 messageButton
             }
         }
-        .navigationDestination(isPresented: Binding(
+        .handzNavigationDestination(isPresented: Binding(
             get: { chatPartner != nil },
             set: { if !$0 { chatPartner = nil } }
         )) {
@@ -147,7 +147,7 @@ struct JobDetailView: View {
             }
         }
         .task { await viewModel.load() }
-        .refreshable { await viewModel.load() }
+        .handzRefreshable { await viewModel.load() }
         .onChange(of: viewModel.workers) { _ in syncLiveLocationSharing() }
         // While a worker is on the way, the customer's map updates every 20 seconds.
         .task(id: isWatchingWorkerArrive) {
@@ -1346,8 +1346,7 @@ struct JobDetailView: View {
         if myOffer == nil && myAssignment == nil && job.status == .open && job.closedToNewOffers == 0 {
             VStack(alignment: .leading, spacing: 12) {
                 sectionTitle("Want this job?")
-                TextField("Add a note for the customer (optional)", text: $viewModel.offerMessage, axis: .vertical)
-                    .lineLimit(1...4)
+                HandzGrowingTextField("Add a note for the customer (optional)", text: $viewModel.offerMessage, lines: 1...4)
                     .focused($noteFocused)
                     .padding(.vertical, 14)
                     .handzField(isFocused: noteFocused)
@@ -1648,7 +1647,7 @@ struct JobDetailView: View {
             guard let job, job.isFlexibleSchedule == 0 else { return false }
             return job.scheduledAt.timeIntervalSinceNow < 24 * 60 * 60
         }()
-        return NavigationStack {
+        return HandzNavigationStack {
             Form {
                 Section {
                     if isLate {
@@ -1665,8 +1664,7 @@ struct JobDetailView: View {
                         .foregroundColor(HandzColor.textSecondary)
                 }
                 Section("Why can't you make it?") {
-                    TextField("Let the customer know", text: $viewModel.workerCancelReason, axis: .vertical)
-                        .lineLimit(2...4)
+                    HandzGrowingTextField("Let the customer know", text: $viewModel.workerCancelReason, lines: 2...4)
                 }
                 Section {
                     Button("Cancel My Spot", role: .destructive) {
@@ -1690,7 +1688,7 @@ struct JobDetailView: View {
     }
 
     private var startCodeEntrySheet: some View {
-        NavigationStack {
+        HandzNavigationStack {
             Form {
                 Section("Enter the code from the customer") {
                     TextField("6-digit code", text: $viewModel.startCodeInput)
@@ -1719,7 +1717,7 @@ struct JobDetailView: View {
     }
 
     private var completionCodeEntrySheet: some View {
-        NavigationStack {
+        HandzNavigationStack {
             Form {
                 Section("Enter the completion code from the customer") {
                     TextField("6-digit code", text: $viewModel.completionCodeInput)
@@ -1748,7 +1746,7 @@ struct JobDetailView: View {
     }
 
     private var cancelReasonSheet: some View {
-        NavigationStack {
+        HandzNavigationStack {
             Form {
                 if lateCancelFeeTotal > 0 {
                     Section {
@@ -1763,8 +1761,7 @@ struct JobDetailView: View {
                     }
                 }
                 Section("Why are you cancelling?") {
-                    TextField("Reason", text: $viewModel.cancelReason, axis: .vertical)
-                        .lineLimit(3...6)
+                    HandzGrowingTextField("Reason", text: $viewModel.cancelReason, lines: 3...6)
                 }
                 Section {
                     Button("Confirm Cancellation", role: .destructive) {
@@ -2148,7 +2145,7 @@ private struct ZoomablePhoto: View {
 
 struct JobDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
+        HandzNavigationStack {
             JobDetailView(jobId: "preview-id")
                 .environmentObject(AuthSession.shared)
         }
