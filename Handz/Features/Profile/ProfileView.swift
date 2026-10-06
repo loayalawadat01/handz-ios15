@@ -49,8 +49,8 @@ struct ProfileView: View {
             }
         }
         .toolbar {
-            if !isOwnProfile {
-                ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if !isOwnProfile {
                     Menu {
                         Button {
                             Task { await toggleBlock() }

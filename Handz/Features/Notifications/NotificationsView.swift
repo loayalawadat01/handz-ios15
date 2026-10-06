@@ -38,8 +38,8 @@ struct NotificationsView: View {
         .handzScreenBackground()
         .navigationTitle("Notifications")
         .toolbar {
-            if viewModel.unreadCount > 0 {
-                ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if viewModel.unreadCount > 0 {
                     Button("Mark all read") {
                         HandzHaptics.tap()
                         Task { await viewModel.markAllRead() }

@@ -548,8 +548,8 @@ struct ReportUserView: View {
             .navigationTitle("Report User")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                if !sent {
-                    ToolbarItem(placement: .cancellationAction) {
+                ToolbarItem(placement: .cancellationAction) {
+                    if !sent {
                         Button("Cancel") { dismiss() }
                     }
                 }
