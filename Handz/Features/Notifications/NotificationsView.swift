@@ -113,6 +113,6 @@ struct NotificationsView: View {
 
 struct NotificationsView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack { NotificationsView() }
+        HandzNavigationStack { NotificationsView() }
     }
 }

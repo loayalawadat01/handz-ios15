@@ -120,6 +120,6 @@ struct ConversationListView: View {
 
 struct ConversationListView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack { ConversationListView() }
+        HandzNavigationStack { ConversationListView() }
     }
 }

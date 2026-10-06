@@ -142,6 +142,6 @@ struct MyPostedJobsView: View {
 
 struct MyPostedJobsView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack { MyPostedJobsView() }
+        HandzNavigationStack { MyPostedJobsView() }
     }
 }

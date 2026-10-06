@@ -200,7 +200,7 @@ private struct MenuRowStyle: ButtonStyle {
 
 struct AccountMenuView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
+        HandzNavigationStack {
             AccountMenuView()
                 .environmentObject(AuthSession.shared)
         }

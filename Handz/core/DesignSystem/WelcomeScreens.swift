@@ -23,9 +23,9 @@ struct HandzStartView: View {
     init() {}
 
     var body: some View {
-        NavigationStack {
+        HandzNavigationStack {
             HandzWelcomeView()
-                .toolbar(.hidden, for: .navigationBar)
+                .handzHideNavigationBar()
         }
         .tint(HandzColor.primary)
     }

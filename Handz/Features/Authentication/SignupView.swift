@@ -4,7 +4,7 @@ import PhotosUI
 struct SignupView: View {
     @StateObject private var viewModel = SignupViewModel()
     @State private var showingTerms = false
-    @State private var photoItem: PhotosPickerItem?
+    @State private var showingPhotoPicker = false
 
     private enum Field: Hashable {
         case name, email, password, phone, experience, certifications
@@ -29,7 +29,7 @@ struct SignupView: View {
             .padding(.top, HandzSpacing.md)
             .padding(.bottom, HandzSpacing.lg)
         }
-        .scrollDismissesKeyboard(.interactively)
+        .handzScrollDismissesKeyboard()
         .safeAreaInset(edge: .bottom, spacing: 0) {
             bottomBar
         }
@@ -43,12 +43,9 @@ struct SignupView: View {
                 multiSelection: $viewModel.skills
             )
         }
-        .onChange(of: photoItem) { item in
-            Task {
-                if let data = try? await item?.loadTransferable(type: Data.self),
-                   let image = UIImage(data: data) {
-                    withHandzAnimation(HandzMotion.bouncy) { viewModel.photo = image }
-                }
+        .handzPhotoPicker(isPresented: $showingPhotoPicker) { photos in
+            if let data = photos.first, let image = UIImage(data: data) {
+                withHandzAnimation(HandzMotion.bouncy) { viewModel.photo = image }
             }
         }
         .onChange(of: focused) { [focused] _ in
@@ -270,7 +267,9 @@ struct SignupView: View {
 
     private var photoPicker: some View {
         VStack(spacing: 10) {
-            PhotosPicker(selection: $photoItem, matching: .images) {
+            Button {
+                showingPhotoPicker = true
+            } label: {
                 ZStack(alignment: .bottomTrailing) {
                     Group {
                         if let photo = viewModel.photo {
@@ -352,8 +351,7 @@ struct SignupView: View {
             }
 
             HandzFormField("Certifications or licenses (optional)") {
-                TextField("For example, licensed electrician", text: $viewModel.certifications, axis: .vertical)
-                    .lineLimit(2...4)
+                HandzGrowingTextField("For example, licensed electrician", text: $viewModel.certifications, lines: 2...4)
                     .focused($focused, equals: .certifications)
                     .padding(.vertical, 14)
                     .handzField(isFocused: focused == .certifications)

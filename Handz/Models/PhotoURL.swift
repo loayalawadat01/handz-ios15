@@ -8,7 +8,7 @@ enum PhotoURL {
         guard let relativePath else { return nil }
         let base: String
         switch AppEnvironment.current {
-        case .development: base = "http://localhost:4000"
+        case .development: base = AppEnvironment.developmentServer
         case .staging: base = "https://staging-api.handz.app"
         case .production: base = "https://api.handz.app"
         }

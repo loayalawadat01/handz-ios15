@@ -26,7 +26,7 @@ struct CategoryPickerView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        HandzNavigationStack {
             List {
                 ForEach(filteredGroups, id: \.group) { section in
                     Section(section.group) {

@@ -9,6 +9,15 @@
 			<string>Default</string>
 		</dict>
 	</array>
+	<key>HandzMacHost</key>
+	<string>localhost</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Handz 15 connects to the Handz server running on your Mac while you test.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict/>

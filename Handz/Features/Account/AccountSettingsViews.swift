@@ -54,7 +54,7 @@ struct EditNameView: View {
             .padding(.top, HandzSpacing.sm)
             .padding(.bottom, HandzSpacing.lg)
         }
-        .scrollDismissesKeyboard(.interactively)
+        .handzScrollDismissesKeyboard()
         .safeAreaInset(edge: .bottom, spacing: 0) {
             SettingsActionBar(
                 title: "Save name",
@@ -235,7 +235,7 @@ struct ChangePasswordView: View {
             .padding(.top, HandzSpacing.sm)
             .padding(.bottom, HandzSpacing.lg)
         }
-        .scrollDismissesKeyboard(.interactively)
+        .handzScrollDismissesKeyboard()
         .safeAreaInset(edge: .bottom, spacing: 0) {
             SettingsActionBar(
                 title: "Change password",
@@ -528,7 +528,7 @@ struct ReportUserView: View {
     ]
 
     var body: some View {
-        NavigationStack {
+        HandzNavigationStack {
             Group {
                 if sent {
                     SettingsSuccessView(
@@ -586,8 +586,7 @@ struct ReportUserView: View {
 
                 HandzFormField("Details (optional)",
                                hint: "Dates, places or what was said help our team.") {
-                    TextField("What happened?", text: $details, axis: .vertical)
-                        .lineLimit(3...6)
+                    HandzGrowingTextField("What happened?", text: $details, lines: 3...6)
                         .focused($detailsFocused)
                         .padding(.vertical, 14)
                         .handzField(isFocused: detailsFocused)
@@ -601,7 +600,7 @@ struct ReportUserView: View {
             .padding(.top, HandzSpacing.sm)
             .padding(.bottom, HandzSpacing.lg)
         }
-        .scrollDismissesKeyboard(.interactively)
+        .handzScrollDismissesKeyboard()
         .safeAreaInset(edge: .bottom, spacing: 0) {
             SettingsActionBar(
                 title: reason == nil ? "Choose a reason" : "Submit report",
@@ -832,7 +831,7 @@ struct EditPhoneView: View {
             .padding(.top, HandzSpacing.sm)
             .padding(.bottom, HandzSpacing.lg)
         }
-        .scrollDismissesKeyboard(.interactively)
+        .handzScrollDismissesKeyboard()
         .safeAreaInset(edge: .bottom, spacing: 0) {
             SettingsActionBar(
                 title: "Save phone number",

@@ -45,6 +45,6 @@ struct MyAppliedJobsView: View {
 
 struct MyAppliedJobsView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack { MyAppliedJobsView() }
+        HandzNavigationStack { MyAppliedJobsView() }
     }
 }

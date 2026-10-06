@@ -98,7 +98,7 @@ struct ReceiptView: View {
         VStack(spacing: 14) {
             HStack(spacing: 12) {
                 if let pdfURL {
-                    ShareLink(item: pdfURL) {
+                    HandzShareLink(item: pdfURL) {
                         Label("Share", systemImage: "square.and.arrow.up")
                     }
                     .buttonStyle(PrimaryButtonStyle(compact: true))
@@ -249,7 +249,7 @@ struct ReceiptSheet: View {
     }
 
     var body: some View {
-        NavigationStack {
+        HandzNavigationStack {
             ReceiptView(paymentId: paymentId)
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {

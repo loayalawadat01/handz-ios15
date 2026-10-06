@@ -17,7 +17,7 @@ struct HomeView: View {
     private var isWorker: Bool { authSession.currentUser?.role == "worker" }
 
     var body: some View {
-        NavigationStack {
+        HandzNavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: HandzSpacing.lg) {
                     entrance(header, order: 0)
@@ -49,7 +49,7 @@ struct HomeView: View {
                 .padding(.bottom, HandzSpacing.xl)
             }
             .handzScreenBackground()
-            .toolbar(.hidden, for: .navigationBar)
+            .handzHideNavigationBar()
             .handzTabBarRoom()
             .onAppear {
                 appeared = true
@@ -59,9 +59,9 @@ struct HomeView: View {
             .refreshable {
                 await viewModel.loadData()
             }
-            .navigationDestination(isPresented: $showingPostJob) { PostJobView() }
-            .navigationDestination(isPresented: $showingFindWork) { BrowseJobsView() }
-            .navigationDestination(isPresented: $showingPayments) { PaymentHistoryView() }
+            .handzNavigationDestination(isPresented: $showingPostJob) { PostJobView() }
+            .handzNavigationDestination(isPresented: $showingFindWork) { BrowseJobsView() }
+            .handzNavigationDestination(isPresented: $showingPayments) { PaymentHistoryView() }
         }
     }
 

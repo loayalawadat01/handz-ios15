@@ -341,7 +341,7 @@ struct TellYourSideSheet: View {
     private var trimmed: String { text.trimmingCharacters(in: .whitespacesAndNewlines) }
 
     var body: some View {
-        NavigationStack {
+        HandzNavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 6) {
@@ -367,7 +367,7 @@ struct TellYourSideSheet: View {
                             .focused($focused)
                             .frame(minHeight: 160)
                             .padding(8)
-                            .scrollContentBackground(.hidden)
+                            .handzHideScrollBackground()
                             .background(
                                 RoundedRectangle(cornerRadius: HandzRadius.md, style: .continuous)
                                     .fill(HandzColor.surface)
@@ -410,7 +410,7 @@ struct TellYourSideSheet: View {
                 }
                 .padding(20)
             }
-            .scrollDismissesKeyboard(.interactively)
+            .handzScrollDismissesKeyboard()
             .handzScreenBackground()
             .navigationTitle("Tell your side")
             .navigationBarTitleDisplayMode(.inline)

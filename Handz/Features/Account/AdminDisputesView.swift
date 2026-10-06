@@ -199,8 +199,7 @@ struct AdminDisputeDetailView: View {
             }
 
             Section("Note to both people (optional)") {
-                TextField("Why you decided this", text: $notes, axis: .vertical)
-                    .lineLimit(2...5)
+                HandzGrowingTextField("Why you decided this", text: $notes, lines: 2...5)
             }
         }
 

@@ -113,6 +113,6 @@ struct BrowseJobsView: View {
 
 struct BrowseJobsView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack { BrowseJobsView() }
+        HandzNavigationStack { BrowseJobsView() }
     }
 }

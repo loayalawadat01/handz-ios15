@@ -107,7 +107,7 @@ struct MyWorkView: View {
                         .opacity(0.9)
                     Text(money(viewModel.earnings?.last7Days ?? 0))
                         .font(HandzTypography.money)
-                        .contentTransition(.numericText())
+                        .handzNumericTextTransition()
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
@@ -116,7 +116,7 @@ struct MyWorkView: View {
                         .opacity(0.9)
                     Text(money(viewModel.earnings?.pending ?? 0))
                         .font(HandzTypography.moneySmall)
-                        .contentTransition(.numericText())
+                        .handzNumericTextTransition()
                 }
                 Image(systemName: "chevron.right")
                     .font(.footnote.weight(.bold))
