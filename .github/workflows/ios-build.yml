@@ -1,12 +1,11 @@
 name: iOS build check
 
-# Builds the app for the iPhone simulator on a Mac in the cloud, to catch
-# Xcode errors before the project is opened on your Mac.
+# Builds the app for the iPhone simulator on a Mac in the cloud (iOS 15.0
+# target), to catch Xcode errors before the project is opened on your Mac.
+# It only runs when started by hand (Actions tab, "iOS build check",
+# "Run workflow"), so it doesn't use up GitHub's free build minutes.
 on:
   workflow_dispatch:
-  push:
-    branches: ['claude/**']
-    paths: ['Handz/**', 'Handz.xcodeproj/**', '.github/workflows/ios-build.yml']
 
 concurrency:
   group: ios-build-${{ github.ref }}
