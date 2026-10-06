@@ -1,0 +1,13 @@
+# Mac and Xcode files that belong to this computer only
+.DS_Store
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+# App builds and backups
+*.ipa
+*.dSYM
+*.dSYM.zip
+*.zip
+# Secrets - never upload
+.env
