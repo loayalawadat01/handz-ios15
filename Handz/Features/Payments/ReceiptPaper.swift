@@ -470,7 +470,9 @@ enum ReceiptPDF {
     /// and drawn into the PDF as a picture.
     @MainActor
     private static func makeOnIOS15<Content: View>(_ content: Content, url: URL) -> URL? {
-        let host = UIHostingController(rootView: content)
+        // In a window the view would get the screen's safe-area spacing, which
+        // would shift and cut the receipt, so that spacing is ignored.
+        let host = UIHostingController(rootView: content.ignoresSafeArea())
         host.view.backgroundColor = .white
         let size = host.sizeThatFits(in: CGSize(width: 428, height: CGFloat.greatestFiniteMagnitude))
         guard size.width > 0, size.height > 0 else { return nil }
