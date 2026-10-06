@@ -47,7 +47,7 @@ struct PaymentsView: View {
         .navigationTitle("Payment")
         .navigationBarTitleDisplayMode(.inline)
         .task { await viewModel.load() }
-        .refreshable { await viewModel.load() }
+        .handzRefreshable { await viewModel.load() }
     }
 
     // MARK: - Customer

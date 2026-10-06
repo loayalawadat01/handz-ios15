@@ -350,7 +350,7 @@ struct BlockedUsersView: View {
         .navigationTitle("Blocked Users")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
-        .refreshable { await load() }
+        .handzRefreshable { await load() }
         .confirmationDialog(confirmTitle, isPresented: showingConfirm, titleVisibility: .visible) {
             if let user = userToUnblock {
                 Button("Unblock \(user.name)") {

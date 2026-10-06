@@ -130,7 +130,165 @@ struct HandzGrowingTextField: View {
             TextField(title, text: $text, axis: .vertical)
                 .lineLimit(lines)
         } else {
+            iOS15Field
+        }
+    }
+
+    /// iOS 15: boxes meant for a few lines (descriptions, reviews, reasons) are a
+    /// fixed-height box that scrolls inside, with the hint shown until you type.
+    /// One-line boxes (chat, a short note) stay one line.
+    @ViewBuilder
+    private var iOS15Field: some View {
+        if lines.lowerBound >= 2 {
+            TextEditor(text: $text)
+                .frame(height: CGFloat(lines.lowerBound + 1) * 22)
+                .overlay(alignment: .topLeading) {
+                    if text.isEmpty {
+                        Text(title)
+                            .foregroundColor(Color(UIColor.placeholderText))
+                            .padding(.top, 8)
+                            .padding(.leading, 5)
+                            .allowsHitTesting(false)
+                    }
+                }
+        } else {
             TextField(title, text: $text)
+        }
+    }
+}
+
+// MARK: - Set up once at launch
+
+enum HandzIOS15 {
+    /// iOS 15 only:
+    /// - a swipe down on a page puts the keyboard away (number pads have no Return key);
+    /// - text editors let the background drawn behind them show through.
+    static func setUp() {
+        if #available(iOS 16.0, *) { return }
+        UIScrollView.appearance().keyboardDismissMode = .interactive
+        UITextView.appearance().backgroundColor = .clear
+    }
+}
+
+// MARK: - Pull down to refresh
+
+extension View {
+    /// Pull down to refresh. On iOS 15 `.refreshable` only works on lists, so for a
+    /// ScrollView the same spinner is added through UIKit. Use it where
+    /// `.refreshable` would go.
+    @ViewBuilder
+    func handzRefreshable(action: @escaping @Sendable () async -> Void) -> some View {
+        if #available(iOS 16.0, *) {
+            refreshable(action: action)
+        } else {
+            background(HandzRefreshControlInstaller(action: action))
+        }
+    }
+}
+
+/// Drawn behind a ScrollView. Finds that scroll view and gives it a UIRefreshControl.
+private struct HandzRefreshControlInstaller: UIViewRepresentable {
+    let action: @Sendable () async -> Void
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(action: action)
+    }
+
+    func makeUIView(context: Context) -> MarkerView {
+        let view = MarkerView()
+        view.isUserInteractionEnabled = false
+        view.coordinator = context.coordinator
+        return view
+    }
+
+    func updateUIView(_ uiView: MarkerView, context: Context) {
+        context.coordinator.action = action
+    }
+
+    final class MarkerView: UIView {
+        weak var coordinator: Coordinator?
+
+        override func didMoveToWindow() {
+            super.didMoveToWindow()
+            attachSoon()
+        }
+
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            attachSoon()
+        }
+
+        private func attachSoon() {
+            guard window != nil, let coordinator = coordinator, !coordinator.isAttached else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.coordinator?.attach(near: self)
+            }
+        }
+    }
+
+    final class Coordinator: NSObject {
+        var action: @Sendable () async -> Void
+        private weak var scrollView: UIScrollView?
+
+        var isAttached: Bool { scrollView != nil }
+
+        init(action: @escaping @Sendable () async -> Void) {
+            self.action = action
+        }
+
+        /// Looks only inside this screen, and picks the scroll view that covers
+        /// most of the area this marker covers (the marker has the ScrollView's size).
+        func attach(near marker: UIView) {
+            guard scrollView == nil,
+                  let window = marker.window,
+                  let screen = Self.viewController(of: marker)?.view else { return }
+            let area = marker.convert(marker.bounds, to: window)
+            guard area.width > 0, area.height > 0 else { return }
+
+            var best: UIScrollView?
+            var bestOverlap: CGFloat = 0
+            Self.forEachScrollView(in: screen) { candidate in
+                guard let parent = candidate.superview else { return }
+                let overlap = parent.convert(candidate.frame, to: window).intersection(area)
+                let size = overlap.isNull ? 0 : overlap.width * overlap.height
+                if size > bestOverlap {
+                    best = candidate
+                    bestOverlap = size
+                }
+            }
+            guard let found = best, bestOverlap > area.width * area.height * 0.5 else { return }
+            scrollView = found
+            guard found.refreshControl == nil else { return }
+            let control = UIRefreshControl()
+            control.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
+            found.refreshControl = control
+        }
+
+        @objc private func refresh(_ control: UIRefreshControl) {
+            let action = self.action
+            Task { @MainActor in
+                await action()
+                control.endRefreshing()
+            }
+        }
+
+        private static func viewController(of view: UIView) -> UIViewController? {
+            var responder: UIResponder? = view
+            while let current = responder {
+                if let controller = current as? UIViewController { return controller }
+                responder = current.next
+            }
+            return nil
+        }
+
+        private static func forEachScrollView(in view: UIView, _ body: (UIScrollView) -> Void) {
+            for subview in view.subviews {
+                if let scroll = subview as? UIScrollView, !(scroll is UITextView) {
+                    body(scroll)
+                }
+                forEachScrollView(in: subview, body)
+            }
         }
     }
 }

@@ -474,7 +474,15 @@ enum ReceiptPDF {
         host.view.backgroundColor = .white
         let size = host.sizeThatFits(in: CGSize(width: 428, height: CGFloat.greatestFiniteMagnitude))
         guard size.width > 0, size.height > 0 else { return nil }
-        host.view.bounds = CGRect(origin: .zero, size: size)
+        // Drawing works reliably only for a view that's in a window, so it's put
+        // in the app's window, far off screen, while it's drawn.
+        let window = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first(where: { $0.isKeyWindow })
+        host.view.frame = CGRect(origin: CGPoint(x: -10_000, y: 0), size: size)
+        window?.addSubview(host.view)
+        defer { host.view.removeFromSuperview() }
         host.view.layoutIfNeeded()
 
         let renderer = UIGraphicsPDFRenderer(bounds: host.view.bounds)

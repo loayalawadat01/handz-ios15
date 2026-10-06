@@ -47,7 +47,7 @@ struct EarningsView: View {
         .handzScreenBackground()
         .navigationTitle("Earnings")
         .task { await load() }
-        .refreshable { await load() }
+        .handzRefreshable { await load() }
     }
 
     private func hero(_ summary: EarningsSummary) -> some View {

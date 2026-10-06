@@ -49,7 +49,7 @@ struct NotificationsView: View {
             }
         }
         .task { await viewModel.load() }
-        .refreshable { await viewModel.load() }
+        .handzRefreshable { await viewModel.load() }
     }
 
     private func group(_ title: String, _ items: [AppNotification]) -> some View {

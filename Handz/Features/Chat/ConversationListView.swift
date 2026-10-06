@@ -15,7 +15,7 @@ struct ConversationListView: View {
         .handzScreenBackground()
         .navigationTitle("Messages")
         .task { await viewModel.load() }
-        .refreshable { await viewModel.load() }
+        .handzRefreshable { await viewModel.load() }
     }
 
     @ViewBuilder

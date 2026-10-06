@@ -56,7 +56,7 @@ struct HomeView: View {
                 viewModel.setInitialMode(forRole: authSession.currentUser?.role ?? "customer")
                 Task { await viewModel.loadData() }
             }
-            .refreshable {
+            .handzRefreshable {
                 await viewModel.loadData()
             }
             .handzNavigationDestination(isPresented: $showingPostJob) { PostJobView() }

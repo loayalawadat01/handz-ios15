@@ -41,7 +41,7 @@ struct PaymentHistoryView: View {
             await viewModel.load()
             withAnimation(reduceMotion ? HandzMotion.fade : HandzMotion.standard) { appeared = true }
         }
-        .refreshable { await viewModel.load() }
+        .handzRefreshable { await viewModel.load() }
     }
 
     // MARK: - Big total at the top

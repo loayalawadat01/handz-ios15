@@ -65,7 +65,7 @@ struct AdminDisputesView: View {
         .handzScreenBackground()
         .navigationTitle("Reported problems")
         .task { await viewModel.load() }
-        .refreshable { await viewModel.load() }
+        .handzRefreshable { await viewModel.load() }
         .onChange(of: viewModel.showingOpen) { _ in
             Task { await viewModel.load() }
         }

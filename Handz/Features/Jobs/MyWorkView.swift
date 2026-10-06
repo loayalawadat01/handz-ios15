@@ -91,7 +91,7 @@ struct MyWorkView: View {
         .handzScreenBackground()
         .navigationTitle("My Work")
         .onAppear { Task { await viewModel.load() } }
-        .refreshable { await viewModel.load() }
+        .handzRefreshable { await viewModel.load() }
     }
 
     // MARK: - Earnings (opens the Earnings screen)

@@ -12,10 +12,11 @@ so it can be tested on an older iPhone such as the iPhone 7.
 
 On iOS 16 and newer this copy looks and works like the main app. On iOS 15:
 
-- Long text boxes (job description, chat, reviews) are one line that scrolls sideways.
+- Text boxes for a few lines (job description, reviews, reasons) are a fixed-size
+  box that scrolls inside, instead of growing as you type. Chat is one line.
+- Swipe down on a page to put the keyboard away.
 - Small pop-ups, like the new job pop-up for workers, open as full-height sheets.
 - Skills on a profile scroll sideways instead of wrapping.
-- Pull down to refresh only works on list screens.
 - Receipt PDFs are saved as a picture of the receipt.
 
 All of this lives in `Handz/core/DesignSystem/iOS15Support.swift`.

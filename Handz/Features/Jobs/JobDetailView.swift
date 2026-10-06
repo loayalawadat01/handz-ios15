@@ -147,7 +147,7 @@ struct JobDetailView: View {
             }
         }
         .task { await viewModel.load() }
-        .refreshable { await viewModel.load() }
+        .handzRefreshable { await viewModel.load() }
         .onChange(of: viewModel.workers) { _ in syncLiveLocationSharing() }
         // While a worker is on the way, the customer's map updates every 20 seconds.
         .task(id: isWatchingWorkerArrive) {
